@@ -82,7 +82,7 @@ export default function NotFound(){
 
 ```typescript
 // components/navigation.tsx
-"use client";
+"use client"; // usePathname hook을 사용하기 위해 작성
 import Link from "next/link";
 import { usePathname } from "next/navigation"; // 경로명을 알려주는 hook
 export default function Navigation(){
@@ -116,3 +116,49 @@ export default function Tomato(){
 }
 ```
 
+
+
+## client & server rendering
+
+- 렌더링 : 코드를 브라우저가 이해할 수 있는 HTML로 변환하는 작업
+
+### Client side rendering
+
+- 클라이언트(브라우저)에서 렌더링 하는 방식
+- Javascript 엔진에 의해 HTML이 작성됨
+  - 사용자가 맨 처음 페이지 접속시에는 body에 아무런 값도 존재하지 않음
+  - 이후 script에 작성된 코드에 의해 HTML이 작성됨
+- Javascript 코드 전체를 다운 받아야 하기에 초기 로딩이 오래걸림
+- SEO 검색 엔진 최적화에 문제 발생
+  - 검색 엔진은 기본적으로 HTML에 어떤 데이터가 들어가 있는지를 확인하는 확인
+  - Javascript가 작동하지 않기에 빈 웹페이지를 검색 엔진이 탐색하게 됨
+
+### Server side rendering
+
+- Next.JS는 기본적으로 server side rendering
+  - 그렇기에 Javascript가 활성화 되지 않아도 HTML이 작성되어 있음
+
+
+
+## Hydration
+
+- 단순 HTML이 렌더링 된 이후 HTML을 React application으로 초기화 하는 작업
+  - 네비게이션 코드의 경우 JavaScript 작동 전에는 <a href="https://github.com/ljm0850">` 형식으로 구현
+  - 이후 Javascript가 작동이 되면서 React component로 변경되어 Link component로 작용이 됨
+
+```typescript
+export default function HydrationTest(){
+    const [count,setCount] = useState(0);
+    return (
+        <ul>
+            <li>
+                <button onClick={()=>setCount(c=>c+1)}>{count}</button>
+            </li>
+        </ul>
+        );
+}
+```
+
+- 위 페이지의 소스코드를 보면 button 태그 안에 0으로 render되어 있음
+  - 그렇기에 JavaScript 작동 전에는 클릭해도 변화가 없음
+  - Javascript가 활성화 되면 eventLisener가 적용되면서 변화 작동
