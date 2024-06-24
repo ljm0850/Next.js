@@ -1,4 +1,4 @@
-# NextJs
+# NextJs Intro
 
 - typescript를 기준으로 작성되었습니다.
 - 기본적으로 React, Vue.js를 알고 있기에 생략된 개념이 많습니다.
@@ -22,7 +22,7 @@ npm install react@latest next@latest react-dom@latest 를 줄인 명령어
 }
 ```
 
-
+# ROUTING
 
 ## Defining Routes
 
@@ -60,3 +60,59 @@ function CleanCode(){
   return 
 }
 ```
+
+
+
+## 404 NOT FOUND
+
+- App 폴더 밑에 `not-found.tsx` 파일 생성시 적용됨
+
+```typescript
+// ./app/not-found.tsx
+export default function NotFound(){
+    return <h1>Not Found</h1>
+}
+```
+
+
+
+## Navigation
+
+- 코드 가독성을 위해 components 폴더는 app과 같은 위치에 폴더를 생성하였음
+
+```typescript
+// components/navigation.tsx
+"use client";
+import Link from "next/link";
+import { usePathname } from "next/navigation"; // 경로명을 알려주는 hook
+export default function Navigation(){
+    const path = usePathname();
+    console.log(path)
+    return (
+    <nav>
+        <ul>
+            <li>
+                <Link href="/">Home</Link> {path === "/"?"🔥":""}
+            </li>
+            <li>
+                <Link href="/ljm-next">Ljm-next</Link> {path === "/ljm-next"?"🔥":""}
+            </li>
+        </ul>
+    </nav>
+        );
+}
+```
+
+```typescript
+// ./app/page.tsx
+// client, server 렌더링 배우기 전이라 수정 될 수 있음
+import Navigation from "../components/navigation";
+
+export default function Tomato(){
+    return <div>
+        <Navigation/>
+        <h1>Hello!</h1>
+    </div>
+}
+```
+
