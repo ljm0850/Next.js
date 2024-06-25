@@ -238,3 +238,70 @@ export default function LjmNextLayout({
 }
 ```
 
+## route groups
+
+- `(폴더명)`
+- Logical group을 만드는 방법
+
+- nextJS는 폴더가 곧 route(URL) 가 되기에 폴더로 분류할 경우 문제가 발생
+- route(URL)를 만들지 않고  파일을 하나의 폴더에 묶는 방법
+
+- `Page.tsx`에 사용되는 코드를 폴더로 분류하는데 이용할 수 있음
+
+
+
+## Metadata
+
+- 꼭 내보내야 하는 object
+- 페이지의 head 부분에 표시되는 것
+
+```tsx
+// layout.tsx 일부
+export const metadata = {
+  title: '웹 페이지 상단에 뜨는 이름',
+  description: '페이지에 대한 설명',
+}
+```
+
+- Metadata는 병합되는 방식
+
+```tsx
+// ljm-next/layout.tsx 일부
+export const metadata = {
+    title: '병합',
+    description: 'ㅋㅋ',
+  }
+```
+
+- 병합되는 방식이기에 ljm-next 페이지의 layout에 위와 같이 설정하면 head의 title과 description이 변경됨
+
+- title의 값은 **객체**도 가능
+
+```tsx
+// app/layout.tsx 일부
+import { Metadata } from "next"
+export const metadata : Metadata = {
+    title: {
+        template : "%s | app",
+        default: "Loading..."
+    },
+    description: 'next.JS를 배우는 중입니다',
+  };
+// app/(home)/page.tsx 일부
+export const metadata = {
+    title:"home",
+};
+// app/ljm-next/layout.tsx 일부
+export const metadata = {
+    title: 'ljm-next',
+  }
+
+// 이와 같이 만들면 home 화면에서는 title이 home | app
+// ljm-next 화면에서는 ljm | app
+// 그 외의 화면(metadata에 title이 없는)에서는 "Loading..."
+```
+
+### 주의
+
+- metadata는 페이지나 레이아웃에서만 내보낼 수 있음, 하위 컴포넌트에서 내보내기 불가
+- 서버 컴포넌트에서만 있을 수 있음
