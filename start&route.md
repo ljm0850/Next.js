@@ -1,4 +1,4 @@
-# NextJs Intro
+# 1. NextJs Intro
 
 - typescript를 기준으로 작성되었습니다.
 - 기본적으로 React, Vue.js를 알고 있기에 생략된 개념이 많습니다.
@@ -22,7 +22,7 @@ npm install react@latest next@latest react-dom@latest 를 줄인 명령어
 }
 ```
 
-# ROUTING
+# 2. ROUTING
 
 ## Defining Routes
 
@@ -147,6 +147,7 @@ export default function Tomato(){
   - 이후 Javascript가 작동이 되면서 React component로 변경되어 Link component로 작용이 됨
 
 ```typescript
+"use client";
 export default function HydrationTest(){
     const [count,setCount] = useState(0);
     return (
@@ -162,3 +163,18 @@ export default function HydrationTest(){
 - 위 페이지의 소스코드를 보면 button 태그 안에 0으로 render되어 있음
   - 그렇기에 JavaScript 작동 전에는 클릭해도 변화가 없음
   - Javascript가 활성화 되면 eventLisener가 적용되면서 변화 작동
+
+
+
+## "use client"
+
+- Next.js 과거 버전에는 모든 component에 use client가 적용됨
+- 모든 component가 hydration이 적용되는 것이 아님
+- "use client"를 맨 위에 갖고 있는 component들만 hydration이 적용됨
+  - 그렇기에 useState, usePathName 등 dynamic 값들이 사용될 경우 use client를 사용해야함
+- 즉 client에서 렌더링 된다는 것이 아닌 backend에서 렌더링 되고, hydrate 및 interactive 됨을 의미
+
+- use client가 적용되지 않은 component의 코드는 server에서만 작동되고 client에 보내지지 않기에 API KEY 등을 고민할 필요가 없음
+
+
+
