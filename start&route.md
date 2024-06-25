@@ -105,7 +105,7 @@ export default function Navigation(){
 
 ```tsx
 // ./app/page.tsx
-// client, server 렌더링 배우기 전이라 수정 될 수 있음
+// Navigation은 layout에 두는 것이 일반적
 import Navigation from "../components/navigation";
 
 export default function Tomato(){
@@ -305,3 +305,31 @@ export const metadata = {
 
 - metadata는 페이지나 레이아웃에서만 내보낼 수 있음, 하위 컴포넌트에서 내보내기 불가
 - 서버 컴포넌트에서만 있을 수 있음
+
+
+
+## Dynamic Routes
+
+- `/movies/:id` 같은 주소
+- `/(movies)/movies/[id]/page.tsx`
+
+- 위와 같이 폴더와 파일을 만들경우 /movies/13245 에 접속시 화면이 구현됨
+
+```tsx
+// (movies)/movies/[id]/page.tsx
+// export default function MovieDetail({params:{id},}:
+// {params : {id : string};}) 형식으로 
+export default function MovieDetail(props){
+    console.log(props)
+    return <h1>Movie {id}</h1>
+}
+
+// URL이 /movies/123?region=kr&page=2 이라고 가정
+// { params: { id: '123' }, searchParams: { region : 'kr', page:'2'} } 이 sever(백엔드)에 출력됨
+
+// params만 필요할 경우 아래와 같이
+export default function MovieDetail({params:{id},}:{params:{id:string}}){
+    return <h1>Movie {id}</h1>
+}
+```
+
