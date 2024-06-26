@@ -114,7 +114,9 @@ export default async function MovieDetail({params:{id},}:
 
 ## Suspense
 
-- 위에서 서술한 API 호출이 모두 끝나고 나서야 렌더링 되는 방식 대신, 완료되는 순서대로 렌더링 하는 방법
+- 로딩 상태를 분리하는 방법
+
+- 위에서 서술한 API 호출이 모두 끝나고 나서야 렌더링 되는 방식 대신, 완료되는 순서대로 렌더링 하기 위해 사용
 - 각각의 API로 얻는 데이터를 다른 파일로 저장
 - 이를 보여줄 페이지에 import하여 사용
 
@@ -131,6 +133,7 @@ export default async function MovieVideos({id}:{id:string}){
     const videos = await getVideos(id);
     return <h6>{JSON.stringify(videos)}</h6>
 }
+
 // components/movie-info.tsx
 import { API_URL } from "../app/(home)/page";
 
@@ -170,3 +173,41 @@ export default function MovieDetail({params:{id},}
 
 - fallback : API 호출이 완료되지 않아 렌더링 되지 않았을 때 보일 페이지
 - 이 경우 MovieDetail에서 기다리는 것이 없으므로 loading.tsx 파일이 사용되지 않음
+
+
+
+## Error Handling
+
+```tsx
+// components/movie-videos.tsx 일부
+async function getVideos(id:string){
+ await new Promise((resolve)=>setTimeout(resolve,3000))
+ throw new Error("에러가 발생했어요");
+}
+
+export default async function MovieVideos({id}:{id:string}){
+    const videos = await getVideos(id);
+    return <h6>{JSON.stringify(videos)}</h6>
+}
+```
+
+- 위와 같이 에러가 발생하게 되면 사용자에게는 아무런 화면도 보이지 않게 됨
+  - 웹페이지 자체가 먹통이 됨
+
+```tsx
+// app/(movies)/movies/[id]/error.tsx
+"use client"
+
+export default function ErrorOMG(){
+    return <h1>미안해.. 에러가 발생했어</h1>
+}
+
+// 에러가 발생하는 페이지는 components/movie-videos.tsx를 호출하는
+// app/(movies)/movies/[id]/page.tsx
+// 같은 자리에 error.tsx 로 파일을 만들면 에러 발생시 보여줄 화면을 띄워줌
+```
+
+- 에러가 발생할 경우 해당 page를 error.tsx가 대체함
+  - layout은 그대로 남아있음
+  - 페이지 안의 하위 컴포넌트에서 에러가 발생해도 페이지 전체가 에러로 변경
+- 같은 폴더 안의 페이지만 대체하게 됨
