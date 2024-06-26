@@ -105,9 +105,68 @@ export default async function MovieDetail({params:{id},}:
 ){
     // const movie = await getMovie(id); 
     // const videos = await getVideos(id);
-    // 이와 같이 코드 작성시 movie 가 할당된 이후 videos 작업을 시작
+    // 위와 같이 코드 작성시 movie 가 할당된 이후 videos 작업을 시작
     const [movie,videos] = await Promise.all([getMovie(id),getVideos(id)]);
     return <h1>{movie.title}</h1>
 }
+// 현 코드의 단점 : getMovie가 끝나도 getVideos가 끝날 때 까지 아무것도 렌더링 되지 않음
 ```
 
+## Suspense
+
+- 위에서 서술한 API 호출이 모두 끝나고 나서야 렌더링 되는 방식 대신, 완료되는 순서대로 렌더링 하는 방법
+- 각각의 API로 얻는 데이터를 다른 파일로 저장
+- 이를 보여줄 페이지에 import하여 사용
+
+```tsx
+// components/movie-videos.tsx
+import { API_URL } from "../app/(home)/page";
+
+async function getVideos(id:string){
+    const response = await fetch(`${API_URL}/${id}/videos`);
+    return response.json();
+}
+
+export default async function MovieVideos({id}:{id:string}){
+    const videos = await getVideos(id);
+    return <h6>{JSON.stringify(videos)}</h6>
+}
+// components/movie-info.tsx
+import { API_URL } from "../app/(home)/page";
+
+async function getMovie(id:string){
+    const response = await fetch(`${API_URL}/${id}`);
+    return response.json();
+}
+
+export default async function MovieInfo({id}:{id:string}) {
+    const movie = await getMovie(id);
+    return <h6>{JSON.stringify(movie)}</h6>;
+}
+// 위 파일을 호출하는 방식으로 구현
+// ./app/(movies)/movies/[id]/page.tsx
+import { Suspense } from "react";
+import MovieInfo from "../../../../components/movie-info"
+import MovieVideos from "../../../../components/movie-videos";
+
+// export default async function MovieDetail({params:{id},}:   // 현재 await를 사용하는 것이 없음
+export default function MovieDetail({params:{id},}
+    {
+        params:{id:string}
+    }
+){
+    return (
+    <div>
+        <Suspense fallback={<h1>Loading movie info</h1>}>
+            <MovieInfo id={id}/>
+        </Suspense>
+        <Suspense fallback={<h1>Loading movie videos</h1>}>
+            <MovieVideos id={id}/>
+        </Suspense>
+    </div>
+    );
+}
+```
+
+- fallback : API 호출이 완료되지 않아 렌더링 되지 않았을 때 보일 페이지
+- 이 경우 MovieDetail에서 기다리는 것이 없으므로 loading.tsx 파일이 사용되지 않음
