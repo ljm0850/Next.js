@@ -116,6 +116,42 @@ export default function Tomato(){
 }
 ```
 
+### React 방식으로 Navigation 구현하기
+
+```tsx
+"use client"
+import Link from "next/link"
+import styles from "../styles/movie.module.css"
+import { useRouter } from "next/navigation"
+
+interface IMovieProps {
+    title: string,
+    id: string,
+    poster_path:string
+}
+
+export default function Movie({title,id,poster_path}:IMovieProps){
+    const router = useRouter();
+    const onClick = () => {
+        router.push(`/movies/${id}`)
+    }
+
+    return (
+        <div className={styles.movie}>
+                <img src={poster_path} alt={title} onClick={onClick} />
+                {/* <img src={poster_path} alt={title}/> */}
+                <Link href={`/movies/${id}`}>{title}</Link>
+        </div>
+    )
+}
+```
+
+- React에서는 onClick과 같은 이벤트를 통해 네비게이션 구현
+- 서버 관점에서 보면 onClick 같은 이벤트는 존재하지 않음
+  - "use client" 사용
+- `use Router` import 주소가 **"next/navigation"**
+  - "next/router"는 NEXT13 이전 버전에서 사용
+
 
 
 ## client & server rendering
