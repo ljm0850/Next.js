@@ -342,6 +342,41 @@ export const metadata = {
 - metadata는 페이지나 레이아웃에서만 내보낼 수 있음, 하위 컴포넌트에서 내보내기 불가
 - 서버 컴포넌트에서만 있을 수 있음
 
+### Dynamic Metadata
+
+- `./movies/[id]` 와 같은 페이지는 id에 따라 동적인 페이지
+  - 그렇기에 페이지 이름, 제목이 바뀌어야함
+
+```tsx
+// app/(movies)/movies/[id]/page.tsx
+
+import { Suspense } from "react";
+import MovieInfo, { getMovie } from "../../../../components/movie-info"
+import MovieVideos from "../../../../components/movie-videos";
+
+interface IParams{
+    params:{id:string}
+}
+// 아래와 마찬가지로 id 값이 params로 받음
+// 영화 정보를 getMovie를 import해서 받아오는데, 이후 다른 곳에서 같은 영화를 getMovie를 통해 정보를 받으면
+// 캐싱된 데이터를 가져옴
+export async function generateMetadata({params:{id},}:IParams){
+    const movie = await getMovie(id)
+    return {
+        title:movie.title,
+    }
+}
+
+export default async function MovieDetail({params:{id},}:IParams){
+    return (
+    <div>
+    </div>
+    );
+}
+```
+
+
+
 
 
 ## Dynamic Routes
