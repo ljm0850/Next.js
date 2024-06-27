@@ -152,6 +152,17 @@ export default function Movie({title,id,poster_path}:IMovieProps){
 - `use Router` import 주소가 **"next/navigation"**
   - "next/router"는 NEXT13 이전 버전에서 사용
 
+### prefetch
+
+```tsx
+<Link prefetch href={`/movies/${id}`}>{title}</Link>
+```
+
+- 위 코드는 [id]에 따라 다른 내용을 보여주는 웹페이지로 향하는 링크
+- Next.JS의 Link에는 **prefetch**를 추가 할 수 있음
+- 이는 클라이언트가 해당 링크를 화면에 노출했을 때 해당 링크의 화면을 미리 만들어 두는 역할을 함
+  - API 호출, DB를 생각해서 고민하고 사용할 것
+
 
 
 ## client & server rendering
